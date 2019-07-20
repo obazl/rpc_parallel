@@ -660,7 +660,7 @@ let init_master_state
              ~initial_connection_state:(fun _ _ -> ())
          in
          Host_and_port.create
-           ~host:(Unix.gethostname ())
+           ~host:"localhost"
            ~port:(Tcp.Server.listening_on server))
     in
     let as_master =
@@ -895,7 +895,7 @@ module Make (S : Worker_spec) = struct
           ~where_to_listen:Tcp.Where_to_listen.of_port_chosen_by_os
       in
       let id = Worker_id.create () in
-      let host = Unix.gethostname () in
+      let host = "localhost" in
       let port = Tcp.Server.listening_on server in
       let global_state = get_worker_state_exn () in
       Hashtbl.add_exn global_state.my_worker_servers ~key:id ~data:server;
@@ -1762,7 +1762,7 @@ let worker_main ~worker_env =
       ~heartbeat_config
       ~where_to_listen:Tcp.Where_to_listen.of_port_chosen_by_os
     >>> fun server ->
-    let host = Unix.gethostname () in
+    let host = "localhost" in
     let port = Tcp.Server.listening_on server in
     let global_state = get_worker_state_exn () in
     Hashtbl.add_exn global_state.my_worker_servers ~key:id ~data:server;
