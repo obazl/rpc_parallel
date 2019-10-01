@@ -55,7 +55,8 @@ let try_within_exn ~monitor f =
 let our_binary =
   let our_binary_lazy =
     lazy
-      (let open Deferred.Or_error.Let_syntax in
+      (match Sys.getenv "CODA_BINARY_PATH" with
+      | None -> (let open Deferred.Or_error.Let_syntax in
       let%map os = Process.run ~prog:"uname" ~args:["-s"] () in
       if os = "Darwin\n" then (
         let open Ctypes in
@@ -74,6 +75,7 @@ let our_binary =
         in
         List.hd_exn @@ String.split s ~on:(Char.of_int 0 |> Option.value_exn) )
       else Unix.getpid () |> Pid.to_int |> sprintf "/proc/%d/exe")
+      | Some path -> Deferred.Or_error.return path)
   in
   fun () -> Lazy.force our_binary_lazy
 ;;
