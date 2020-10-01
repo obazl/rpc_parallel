@@ -1,3 +1,9 @@
+# bazel
+bazel-*
+.bazel
+.cpcache/
+user.bazelrc
+
 _build
 *.install
 *.merlin

@@ -1,0 +1,348 @@
+load(
+    "@obazl_rules_ocaml//ocaml:build.bzl",
+    "ocaml_archive",
+    "ocaml_interface",
+    "ocaml_module",
+    "ocaml_ns_module",
+    "ppx_executable",
+)
+
+COMMON_OPTS = select({
+    "//bzl/config:enable_verbose": ["-verbose"],
+    "//conditions:default": ["-thread"],
+}) + []
+
+LINK_OPTS = select({
+    "//bzl/config:always_link": ["-linkall"],
+    "//conditions:default": [],
+}) + []
+
+EXEC_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+IMPL_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+INTF_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+ARCHIVE_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+COMMON_DEPS = []
+
+PPX_EXEC_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+PPX_IMPL_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+PPX_INTF_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+PPX_NS_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+PPX_ARCHIVE_OPTS = COMMON_OPTS + LINK_OPTS + []
+
+RPC_PARALLEL_NS = "Rpc_parallel"
+
+## (ppx_jane)
+PPX_0 = "//bzl/ppx:ppx[ppx_jane]"
+
+PPX_0_ARGS = [
+    # do not sort (buildifier)
+    "-cookie",
+    "library-name=\"async_kernel\"",
+    "-corrected-suffix",
+    ".ppx-corrected",
+]
+
+ocaml_archive(
+    name = "rpc_parallel",
+    opts = ARCHIVE_OPTS,
+    visibility = ["//visibility:public"],
+    deps = [
+        # do not sort (buildifier)
+        ":rpc_parallel_ns_module",
+        ":for_testing_internal.cm_",
+        ":remote_executable.cm_",
+        ":executable_location.cm_",
+        ":fd_redirection.cm_",
+        ":parallel_intf.cm_",
+        ":parallel.cm_",
+        ":map_reduce.cm_",
+        ":parallel_managed.cm_",
+        ":rpc_parallel.cm_",
+        ":utils.cm_",
+    ],
+)
+
+ocaml_ns_module(
+    name = "rpc_parallel_ns_module",
+    ns = RPC_PARALLEL_NS,
+    submodules = [
+        # do not sort (buildifier)
+        "for_testing_internal.ml",
+        "remote_executable.ml",
+        "executable_location.ml",
+        "fd_redirection.ml",
+        "parallel_intf.ml",
+        "parallel.ml",
+        "map_reduce.ml",
+        "parallel_managed.ml",
+        "rpc_parallel.ml",
+        "utils.ml",
+    ],
+)
+
+COMMON_DEPS_RPC_PARALLEL = [
+    # do not sort (buildifier)
+    "@opam//pkg:async",
+    "@opam//pkg:core",
+    "@opam//pkg:core.daemon",
+    # "@opam//pkg:core_kernel.pairing_heap",
+    "@opam//pkg:sexplib",
+    "@opam//pkg:core.uuid",
+]
+
+ocaml_interface(
+    name = "for_testing_internal.cmi",
+    intf = "for_testing_internal.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL,
+)
+
+ocaml_module(
+    name = "for_testing_internal.cm_",
+    impl = "for_testing_internal.ml",
+    intf = ":for_testing_internal.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL,
+)
+
+ocaml_interface(
+    name = "remote_executable.cmi",
+    intf = "remote_executable.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL,
+)
+
+ocaml_module(
+    name = "remote_executable.cm_",
+    impl = "remote_executable.ml",
+    intf = ":remote_executable.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":utils.cm_",
+    ],
+)
+
+ocaml_interface(
+    name = "executable_location.cmi",
+    intf = "executable_location.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":remote_executable.cm_",
+    ],
+)
+
+ocaml_module(
+    name = "executable_location.cm_",
+    impl = "executable_location.ml",
+    intf = ":executable_location.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":remote_executable.cm_",
+    ],
+)
+
+ocaml_interface(
+    name = "fd_redirection.cmi",
+    intf = "fd_redirection.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL,
+)
+
+ocaml_module(
+    name = "fd_redirection.cm_",
+    impl = "fd_redirection.ml",
+    intf = ":fd_redirection.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL,
+)
+
+ocaml_module(
+    name = "parallel_intf.cm_",
+    impl = "parallel_intf.ml",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":executable_location.cm_",
+        ":fd_redirection.cm_",
+    ],
+)
+
+ocaml_interface(
+    name = "parallel.cmi",
+    intf = "parallel.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":parallel_intf.cm_",
+    ],
+)
+
+ocaml_module(
+    name = "parallel.cm_",
+    impl = "parallel.ml",
+    intf = ":parallel.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":executable_location.cm_",
+        ":fd_redirection.cm_",
+        ":for_testing_internal.cm_",
+        ":parallel_intf.cm_",
+        ":remote_executable.cm_",
+        ":utils.cm_",
+    ],
+)
+
+ocaml_interface(
+    name = "map_reduce.cmi",
+    intf = "map_reduce.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":remote_executable.cm_",
+    ],
+)
+
+ocaml_module(
+    name = "map_reduce.cm_",
+    impl = "map_reduce.ml",
+    intf = ":map_reduce.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":fd_redirection.cm_",
+        ":parallel.cm_",
+        ":remote_executable.cm_",
+    ],
+)
+
+ocaml_interface(
+    name = "parallel_managed.cmi",
+    intf = "parallel_managed.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":executable_location.cm_",
+        ":fd_redirection.cm_",
+        ":parallel.cm_",
+    ],
+)
+
+ocaml_module(
+    name = "parallel_managed.cm_",
+    impl = "parallel_managed.ml",
+    intf = ":parallel_managed.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":executable_location.cm_",
+        ":fd_redirection.cm_",
+        ":parallel.cm_",
+        ":utils.cm_",
+    ],
+)
+
+ocaml_module(
+    name = "rpc_parallel.cm_",
+    impl = "rpc_parallel.ml",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        ":executable_location.cm_",
+        ":fd_redirection.cm_",
+        ":map_reduce.cm_",
+        ":parallel.cm_",
+        ":parallel_managed.cm_",
+        ":remote_executable.cm_",
+    ],
+)
+
+ocaml_interface(
+    name = "utils.cmi",
+    intf = "utils.mli",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = INTF_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:private"],
+    deps = COMMON_DEPS_RPC_PARALLEL,
+)
+
+ocaml_module(
+    name = "utils.cm_",
+    impl = "utils.ml",
+    intf = ":utils.cmi",
+    ns_module = ":rpc_parallel_ns_module",
+    opts = IMPL_OPTS,
+    ppx = PPX_0,
+    ppx_args = PPX_0_ARGS,
+    visibility = ["//visibility:public"],
+    deps = COMMON_DEPS_RPC_PARALLEL + [
+        "@opam//pkg:ctypes",
+        ":for_testing_internal.cm_",
+    ],
+)
