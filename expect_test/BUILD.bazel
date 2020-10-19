@@ -1,0 +1,160 @@
+load(
+    "@obazl_rules_ocaml//ocaml:rules.bzl",
+    "ocaml_archive",
+    "ocaml_interface",
+    "ocaml_module",
+    "ocaml_ns_module",
+    "ppx_executable"
+)
+
+## Global Options
+load(
+    "//bzl:config.bzl",
+    "ARCHIVE_OPTS",
+    "GLOBAL_CLI_OPTS",
+    "INTERFACE_OPTS",
+    "MODULE_OPTS",
+    "NS_MODULE_OPTS",
+)
+
+## Repo Options
+load("//bzl/rpc_parallel:config.bzl", "RPC_PARALLEL_OPTS")
+
+PKG_OPTS = GLOBAL_CLI_OPTS + RPC_PARALLEL_OPTS + []
+LIB_1_OPTS = []
+LIB_1_ARCHIVE_OPTS = PKG_OPTS + LIB_1_OPTS + ARCHIVE_OPTS
+LIB_1_INTERFACE_OPTS = PKG_OPTS + LIB_1_OPTS + INTERFACE_OPTS
+LIB_1_MODULE_OPTS = PKG_OPTS + LIB_1_OPTS + MODULE_OPTS
+LIB_1_NS_MODULE_OPTS = PKG_OPTS + LIB_1_OPTS + NS_MODULE_OPTS
+
+LIB_1_DEPS = [
+    # do not sort (buildifier)
+    "@opam//pkg:async",
+    "@opam//pkg:core",
+    "@rpc_parallel//src:rpc_parallel",
+]
+
+PPX_1_ARGS = ["-inline-test-lib", "rpc_parallel"] ## required by ppx_expect
+
+################################################################
+## LIB 1
+################################################################
+ocaml_archive(
+    name = "rpc_parallel_expect_test",
+    opts = LIB_1_ARCHIVE_OPTS,
+    visibility = ["//visibility:public"],
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+        ":Rpc_parallel_expect_test_ns",
+        ":Product_worker",
+        ":Sum_worker",
+        ":Workers",
+    ],
+)
+
+ocaml_ns_module(
+    name = "Rpc_parallel_expect_test_ns",
+    ns = "rpc_parallel_expect_test",
+    opts = LIB_1_NS_MODULE_OPTS,
+    submodules = [
+        # do not sort (buildifier)
+        "product_worker.ml",
+        "sum_worker.ml",
+        "workers.ml",
+    ],
+)
+
+ocaml_module(
+    name = "Product_worker",
+    src = "product_worker.ml",
+    intf = ":_Product_worker",
+    ns_module = ":Rpc_parallel_expect_test_ns",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = ":ppx",
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS
+)
+
+ocaml_interface(
+    name = "_Product_worker",
+    src = "product_worker.mli",
+    ns_module = ":Rpc_parallel_expect_test_ns",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = ":ppx",
+    ppx_args = PPX_1_ARGS,
+    visibility = ["//visibility:private"],
+    deps = LIB_1_DEPS
+)
+
+ocaml_module(
+    name = "Sum_worker",
+    src = "sum_worker.ml",
+    intf = ":_Sum_worker",
+    ns_module = ":Rpc_parallel_expect_test_ns",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = ":ppx",
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS
+)
+
+ocaml_interface(
+    name = "_Sum_worker",
+    src = "sum_worker.mli",
+    ns_module = ":Rpc_parallel_expect_test_ns",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = ":ppx",
+    ppx_args = PPX_1_ARGS,
+    visibility = ["//visibility:private"],
+    deps = LIB_1_DEPS
+)
+
+ocaml_module(
+    name = "Workers",
+    src = "workers.ml",
+    intf = ":_Workers",
+    ns_module = ":Rpc_parallel_expect_test_ns",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = ":ppx",
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+        ":Product_worker",
+        ":Sum_worker"
+    ],
+)
+
+ocaml_interface(
+    name = "_Workers",
+    src = "workers.mli",
+    ns_module = ":Rpc_parallel_expect_test_ns",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = ":ppx",
+    ppx_args = PPX_1_ARGS,
+    visibility = ["//visibility:private"],
+)
+
+################################################################
+ppx_executable(
+    name = "ppx",
+    srcs = ["@obazl//ppxlib:driver_standalone_shim"],
+    opts = select({
+        "//bzl/config:enable_verbose": ["-verbose"],
+        "//conditions:default": [],
+    }) + [
+        "-linkall",
+        "-predicates",
+        "ppx_driver",
+    ],
+    deps = [
+        ## ppx_jane is a shotgun. these are the libs that are actually used.
+        "@opam//pkg:ppx_let",
+        "@opam//pkg:ppx_here",
+        "@opam//pkg:ppx_bin_prot",
+        "@opam//pkg:ppx_expect",
+    ],
+    # lazy_deps = [
+    #     "@opam//pkg:bin_prot",
+    #     "@opam//pkg:ppx_expect.collector",
+    #     "@opam//pkg:ppx_inline_test.runtime-lib",
+    # ]
+)

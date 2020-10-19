@@ -1,0 +1,400 @@
+## OBAZL GENERATED FILE ## To retain edits (prevent overwrite), delete this line.
+## Dune file: /Users/gar/mina/rpc_parallel/example/dune
+
+load(
+    "@obazl_rules_ocaml//ocaml:rules.bzl",
+    "ocaml_executable",
+    "ocaml_interface",
+    "ocaml_module",
+)
+
+## Global Options
+load(
+    "//bzl:config.bzl",
+    "EXECUTABLE_OPTS",
+    "GLOBAL_CLI_OPTS",
+    "INTERFACE_OPTS",
+    "MODULE_OPTS",
+)
+
+## Repo Options
+load("//bzl/rpc_parallel:config.bzl", "RPC_PARALLEL_OPTS")
+
+PKG_OPTS = GLOBAL_CLI_OPTS + RPC_PARALLEL_OPTS + []
+
+LIB_1_OPTS = []
+
+LIB_1_EXECUTABLE_OPTS = PKG_OPTS + LIB_1_OPTS + EXECUTABLE_OPTS
+
+LIB_1_INTERFACE_OPTS = PKG_OPTS + LIB_1_OPTS + INTERFACE_OPTS
+
+LIB_1_MODULE_OPTS = PKG_OPTS + LIB_1_OPTS + MODULE_OPTS
+
+LIB_1_DEPS = [
+    # do not sort (buildifier)
+    "@opam//pkg:async",
+    "@opam//pkg:core",
+    # "@opam//pkg:jane",  ## not found
+    "@opam//pkg:sexplib",
+    "@rpc_parallel//src:rpc_parallel",
+]
+
+PPX_1 = "//bzl/ppx:ppx[ppx_jane]"
+
+PPX_1_ARGS = [
+    # do not sort (buildifier)
+]
+
+################################################################
+########    EXECUTABLES    ########
+################################
+ocaml_executable(
+    name = "add_numbers",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Add_numbers"],
+)
+
+ocaml_module(
+    name = "Add_numbers",
+    src = "add_numbers.ml",
+    intf = "_Add_numbers",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Add_numbers",
+    src = "add_numbers.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "alternative_init",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Alternative_init"],
+)
+
+ocaml_module(
+    name = "Alternative_init",
+    src = "alternative_init.ml",
+    intf = "_Alternative_init",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Alternative_init",
+    src = "alternative_init.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "async_log",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Async_log"],
+)
+
+ocaml_module(
+    name = "Async_log",
+    src = "async_log.ml",
+    intf = "_Async_log",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Async_log",
+    src = "async_log.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+## depends on lib "jane", which evidently no longer exists:
+# ocaml_executable(
+#     name = "number_stats",
+#     opts = LIB_1_EXECUTABLE_OPTS,
+#     deps = LIB_1_DEPS + [":Number_stats"],
+# )
+
+# ocaml_module(
+#     name = "Number_stats",
+#     src = "number_stats.ml",
+#     intf = "_Number_stats",
+#     opts = LIB_1_MODULE_OPTS,
+#     ppx = PPX_1,
+#     ppx_args = PPX_1_ARGS,
+#     deps = LIB_1_DEPS + [
+#         # do not sort (buildifier)
+#     ],
+# )
+
+# ocaml_interface(
+#     name = "_Number_stats",
+#     src = "number_stats.mli",
+#     opts = LIB_1_INTERFACE_OPTS,
+#     ppx = PPX_1,
+#     ppx_args = PPX_1_ARGS,
+# )
+
+################################
+ocaml_executable(
+    name = "reverse_direct_pipe",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Reverse_direct_pipe"],
+)
+
+ocaml_module(
+    name = "Reverse_direct_pipe",
+    src = "reverse_direct_pipe.ml",
+    intf = "_Reverse_direct_pipe",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Reverse_direct_pipe",
+    src = "reverse_direct_pipe.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "reverse_pipe",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Reverse_pipe"],
+)
+
+ocaml_module(
+    name = "Reverse_pipe",
+    src = "reverse_pipe.ml",
+    intf = "_Reverse_pipe",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Reverse_pipe",
+    src = "reverse_pipe.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "rpc_direct_pipe",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Rpc_direct_pipe"],
+)
+
+ocaml_module(
+    name = "Rpc_direct_pipe",
+    src = "rpc_direct_pipe.ml",
+    intf = "_Rpc_direct_pipe",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Rpc_direct_pipe",
+    src = "rpc_direct_pipe.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "serve",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Serve"],
+)
+
+ocaml_module(
+    name = "Serve",
+    src = "serve.ml",
+    intf = "_Serve",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Serve",
+    src = "serve.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "side_arg",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Side_arg"],
+)
+
+ocaml_module(
+    name = "Side_arg",
+    src = "side_arg.ml",
+    intf = "_Side_arg",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Side_arg",
+    src = "side_arg.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "spawn_in_foreground",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Spawn_in_foreground"],
+)
+
+ocaml_module(
+    name = "Spawn_in_foreground",
+    src = "spawn_in_foreground.ml",
+    intf = "_Spawn_in_foreground",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Spawn_in_foreground",
+    src = "spawn_in_foreground.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "stream_workers",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Stream_workers"],
+)
+
+ocaml_module(
+    name = "Stream_workers",
+    src = "stream_workers.ml",
+    intf = "_Stream_workers",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Stream_workers",
+    src = "stream_workers.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "worker_binprot",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Worker_binprot"],
+)
+
+ocaml_module(
+    name = "Worker_binprot",
+    src = "worker_binprot.ml",
+    intf = "_Worker_binprot",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Worker_binprot",
+    src = "worker_binprot.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
+
+################################
+ocaml_executable(
+    name = "workers_as_masters",
+    opts = LIB_1_EXECUTABLE_OPTS,
+    deps = LIB_1_DEPS + [":Workers_as_masters"],
+)
+
+ocaml_module(
+    name = "Workers_as_masters",
+    src = "workers_as_masters.ml",
+    intf = "_Workers_as_masters",
+    opts = LIB_1_MODULE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+    deps = LIB_1_DEPS + [
+        # do not sort (buildifier)
+    ],
+)
+
+ocaml_interface(
+    name = "_Workers_as_masters",
+    src = "workers_as_masters.mli",
+    opts = LIB_1_INTERFACE_OPTS,
+    ppx = PPX_1,
+    ppx_args = PPX_1_ARGS,
+)
