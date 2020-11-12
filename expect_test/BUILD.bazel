@@ -1,61 +1,72 @@
+## OBAZL GENERATED FILE ## To retain edits (prevent overwrite), delete this line.
+
 load(
     "@obazl_rules_ocaml//ocaml:rules.bzl",
     "ocaml_archive",
     "ocaml_interface",
     "ocaml_module",
-    "ocaml_ns_module",
-    "ppx_executable"
+    "ocaml_ns",
 )
-
-## Global Options
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
 load(
-    "//bzl:config.bzl",
-    "ARCHIVE_OPTS",
-    "GLOBAL_CLI_OPTS",
-    "INTERFACE_OPTS",
-    "MODULE_OPTS",
-    "NS_MODULE_OPTS",
+    "//:BUILD.bzl",
+    "REPO_ARCHIVE_OPTS",
+    "REPO_INTERFACE_OPTS",
+    "REPO_MODULE_OPTS",
+    "REPO_NS_MODULE_OPTS",
+)
+load(
+    ":BUILD.bzl",
+    "PKG_ARCHIVE_OPTS",
+    "PKG_INTERFACE_OPTS",
+    "PKG_MODULE_OPTS",
+    "PKG_NS_MODULE_OPTS",
 )
 
-## Repo Options
-load("//bzl/rpc_parallel:config.bzl", "RPC_PARALLEL_OPTS")
+################################################################
+## STANZA 1: LIBRARY RPC_PARALLEL_EXPECT_TEST
+################################################################
+RPC_PARALLEL_EXPECT_TEST_ARCHIVE_OPTS = REPO_ARCHIVE_OPTS + PKG_ARCHIVE_OPTS + []
 
-PKG_OPTS = GLOBAL_CLI_OPTS + RPC_PARALLEL_OPTS + []
-LIB_1_OPTS = []
-LIB_1_ARCHIVE_OPTS = PKG_OPTS + LIB_1_OPTS + ARCHIVE_OPTS
-LIB_1_INTERFACE_OPTS = PKG_OPTS + LIB_1_OPTS + INTERFACE_OPTS
-LIB_1_MODULE_OPTS = PKG_OPTS + LIB_1_OPTS + MODULE_OPTS
-LIB_1_NS_MODULE_OPTS = PKG_OPTS + LIB_1_OPTS + NS_MODULE_OPTS
+RPC_PARALLEL_EXPECT_TEST_INTERFACE_OPTS = REPO_INTERFACE_OPTS + PKG_INTERFACE_OPTS
 
-LIB_1_DEPS = [
+RPC_PARALLEL_EXPECT_TEST_MODULE_OPTS = REPO_MODULE_OPTS + PKG_MODULE_OPTS
+
+RPC_PARALLEL_EXPECT_TEST_NS_MODULE_OPTS = REPO_NS_MODULE_OPTS + PKG_NS_MODULE_OPTS
+
+RPC_PARALLEL_EXPECT_TEST_DEPS = [
     # do not sort (buildifier)
     "@opam//pkg:async",
     "@opam//pkg:core",
     "@rpc_parallel//src:rpc_parallel",
 ]
 
-PPX_1_ARGS = ["-inline-test-lib", "rpc_parallel"] ## required by ppx_expect
+RPC_PARALLEL_EXPECT_TEST_PPX = "@//bzl/ppx:ppx.exe[ppx_jane]"
 
-################################################################
-## LIB 1
-################################################################
+RPC_PARALLEL_EXPECT_TEST_PPX_ARGS = [
+    # do not sort (buildifier)
+    "-inline-test-lib",
+    "rpc_parallel_expect_test",
+]
+
+##############
 ocaml_archive(
     name = "rpc_parallel_expect_test",
-    opts = LIB_1_ARCHIVE_OPTS,
+    opts = RPC_PARALLEL_EXPECT_TEST_ARCHIVE_OPTS,
     visibility = ["//visibility:public"],
-    deps = LIB_1_DEPS + [
+    deps = RPC_PARALLEL_EXPECT_TEST_DEPS + [
         # do not sort (buildifier)
-        ":Rpc_parallel_expect_test_ns",
-        ":Product_worker",
-        ":Sum_worker",
-        ":Workers",
+        ":_Product_worker",
+        ":_Sum_worker",
+        ":_Workers",
     ],
 )
 
-ocaml_ns_module(
+#########
+ocaml_ns(
     name = "Rpc_parallel_expect_test_ns",
     ns = "rpc_parallel_expect_test",
-    opts = LIB_1_NS_MODULE_OPTS,
+    opts = RPC_PARALLEL_EXPECT_TEST_NS_MODULE_OPTS,
     submodules = [
         # do not sort (buildifier)
         "product_worker.ml",
@@ -64,97 +75,143 @@ ocaml_ns_module(
     ],
 )
 
+#############
 ocaml_module(
-    name = "Product_worker",
-    src = "product_worker.ml",
-    intf = ":_Product_worker",
-    ns_module = ":Rpc_parallel_expect_test_ns",
-    opts = LIB_1_MODULE_OPTS,
-    ppx = ":ppx",
-    ppx_args = PPX_1_ARGS,
-    deps = LIB_1_DEPS
-)
-
-ocaml_interface(
     name = "_Product_worker",
+    src = "product_worker.ml",
+    intf = ":_Product_worker.cmi",
+    ns = ":Rpc_parallel_expect_test_ns",
+    opts = RPC_PARALLEL_EXPECT_TEST_MODULE_OPTS,
+    ppx = RPC_PARALLEL_EXPECT_TEST_PPX,
+    ppx_args = RPC_PARALLEL_EXPECT_TEST_PPX_ARGS,
+    deps = RPC_PARALLEL_EXPECT_TEST_DEPS,
+)
+
+################
+ocaml_interface(
+    name = "_Product_worker.cmi",
     src = "product_worker.mli",
-    ns_module = ":Rpc_parallel_expect_test_ns",
-    opts = LIB_1_INTERFACE_OPTS,
-    ppx = ":ppx",
-    ppx_args = PPX_1_ARGS,
-    visibility = ["//visibility:private"],
-    deps = LIB_1_DEPS
+    ns = ":Rpc_parallel_expect_test_ns",
+    opts = RPC_PARALLEL_EXPECT_TEST_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_EXPECT_TEST_PPX,
+    ppx_args = RPC_PARALLEL_EXPECT_TEST_PPX_ARGS,
+    deps = RPC_PARALLEL_EXPECT_TEST_DEPS,
 )
 
+#############
 ocaml_module(
-    name = "Sum_worker",
-    src = "sum_worker.ml",
-    intf = ":_Sum_worker",
-    ns_module = ":Rpc_parallel_expect_test_ns",
-    opts = LIB_1_MODULE_OPTS,
-    ppx = ":ppx",
-    ppx_args = PPX_1_ARGS,
-    deps = LIB_1_DEPS
-)
-
-ocaml_interface(
     name = "_Sum_worker",
-    src = "sum_worker.mli",
-    ns_module = ":Rpc_parallel_expect_test_ns",
-    opts = LIB_1_INTERFACE_OPTS,
-    ppx = ":ppx",
-    ppx_args = PPX_1_ARGS,
-    visibility = ["//visibility:private"],
-    deps = LIB_1_DEPS
+    src = "sum_worker.ml",
+    intf = ":_Sum_worker.cmi",
+    ns = ":Rpc_parallel_expect_test_ns",
+    opts = RPC_PARALLEL_EXPECT_TEST_MODULE_OPTS,
+    ppx = RPC_PARALLEL_EXPECT_TEST_PPX,
+    ppx_args = RPC_PARALLEL_EXPECT_TEST_PPX_ARGS,
+    deps = RPC_PARALLEL_EXPECT_TEST_DEPS,
 )
 
-ocaml_module(
-    name = "Workers",
-    src = "workers.ml",
-    intf = ":_Workers",
-    ns_module = ":Rpc_parallel_expect_test_ns",
-    opts = LIB_1_MODULE_OPTS,
-    ppx = ":ppx",
-    ppx_args = PPX_1_ARGS,
-    deps = LIB_1_DEPS + [
-        # do not sort (buildifier)
-        ":Product_worker",
-        ":Sum_worker"
-    ],
-)
-
+################
 ocaml_interface(
-    name = "_Workers",
-    src = "workers.mli",
-    ns_module = ":Rpc_parallel_expect_test_ns",
-    opts = LIB_1_INTERFACE_OPTS,
-    ppx = ":ppx",
-    ppx_args = PPX_1_ARGS,
-    visibility = ["//visibility:private"],
+    name = "_Sum_worker.cmi",
+    src = "sum_worker.mli",
+    ns = ":Rpc_parallel_expect_test_ns",
+    opts = RPC_PARALLEL_EXPECT_TEST_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_EXPECT_TEST_PPX,
+    ppx_args = RPC_PARALLEL_EXPECT_TEST_PPX_ARGS,
+    deps = RPC_PARALLEL_EXPECT_TEST_DEPS,
 )
 
-################################################################
-ppx_executable(
-    name = "ppx",
-    srcs = ["@obazl//ppxlib:driver_standalone_shim"],
-    opts = select({
-        "//bzl/config:enable_verbose": ["-verbose"],
-        "//conditions:default": [],
-    }) + [
-        "-linkall",
-        "-predicates",
-        "ppx_driver",
+#############
+ocaml_module(
+    name = "_Workers",
+    src = "workers.ml",
+    intf = ":_Workers.cmi",
+    ns = ":Rpc_parallel_expect_test_ns",
+    opts = RPC_PARALLEL_EXPECT_TEST_MODULE_OPTS,
+    ppx = RPC_PARALLEL_EXPECT_TEST_PPX,
+    ppx_args = RPC_PARALLEL_EXPECT_TEST_PPX_ARGS,
+    deps = RPC_PARALLEL_EXPECT_TEST_DEPS + ["_Sum_worker", "_Product_worker"],
+)
+
+################
+ocaml_interface(
+    name = "_Workers.cmi",
+    src = "workers.mli",
+    ns = ":Rpc_parallel_expect_test_ns",
+    opts = RPC_PARALLEL_EXPECT_TEST_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_EXPECT_TEST_PPX,
+    ppx_args = RPC_PARALLEL_EXPECT_TEST_PPX_ARGS,
+    deps = RPC_PARALLEL_EXPECT_TEST_DEPS,
+)
+
+###################################################################
+######## Configuration Settings - see :BUILD.bzl #################
+bool_flag(
+    name = "always-link",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_always_link",
+    flag_values = {":always-link": str(True)},
+)
+
+bool_flag(
+    name = "debug",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "enable_debug",
+    flag_values = {":debug": str(True)},
+)
+
+bool_flag(
+    name = "threads",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "enable_threads",
+    flag_values = {":threads": str(True)},
+)
+
+bool_flag(
+    name = "tooling",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_tooling",
+    flag_values = {":tooling": str(True)},
+)
+
+bool_flag(
+    name = "verbose",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_verbose",
+    flag_values = {":verbose": str(True)},
+)
+
+## PPX control
+string_flag(
+    name = "ppx-out",
+    build_setting_default = "binary",
+    values = [
+        "binary",
+        "text",
     ],
-    deps = [
-        ## ppx_jane is a shotgun. these are the libs that are actually used.
-        "@opam//pkg:ppx_let",
-        "@opam//pkg:ppx_here",
-        "@opam//pkg:ppx_bin_prot",
-        "@opam//pkg:ppx_expect",
-    ],
-    # lazy_deps = [
-    #     "@opam//pkg:bin_prot",
-    #     "@opam//pkg:ppx_expect.collector",
-    #     "@opam//pkg:ppx_inline_test.runtime-lib",
-    # ]
+)
+
+config_setting(
+    name = "enable_ppx_output_format_text",
+    flag_values = {":ppx-out": "text"},
+)
+
+config_setting(
+    name = "enable_ppx_output_format_binary",
+    flag_values = {":ppx-out": "binary"},
 )

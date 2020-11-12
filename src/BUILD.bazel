@@ -1,32 +1,41 @@
+## OBAZL GENERATED FILE ## To retain edits (prevent overwrite), delete this line.
+
 load(
     "@obazl_rules_ocaml//ocaml:rules.bzl",
     "ocaml_archive",
     "ocaml_interface",
     "ocaml_module",
-    "ocaml_ns_module",
-    "ppx_executable"
+    "ocaml_ns",
 )
-
-## Global Options
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
 load(
-    "//bzl:config.bzl",
-    "ARCHIVE_OPTS",
-    "GLOBAL_CLI_OPTS",
-    "INTERFACE_OPTS",
-    "MODULE_OPTS",
-    "NS_MODULE_OPTS",
+    "//:BUILD.bzl",
+    "REPO_ARCHIVE_OPTS",
+    "REPO_INTERFACE_OPTS",
+    "REPO_MODULE_OPTS",
+    "REPO_NS_MODULE_OPTS",
+)
+load(
+    ":BUILD.bzl",
+    "PKG_ARCHIVE_OPTS",
+    "PKG_INTERFACE_OPTS",
+    "PKG_MODULE_OPTS",
+    "PKG_NS_MODULE_OPTS",
 )
 
-## Repo Options
-load("//bzl/rpc_parallel:config.bzl", "RPC_PARALLEL_OPTS")
+################################################################
+## STANZA 1: LIBRARY RPC_PARALLEL
+################################################################
+RPC_PARALLEL_ARCHIVE_OPTS = REPO_ARCHIVE_OPTS + PKG_ARCHIVE_OPTS + []
 
-PKG_OPTS = GLOBAL_CLI_OPTS + RPC_PARALLEL_OPTS + ["-linkall"]
-LIB_OPTS = []
-LIB_ARCHIVE_OPTS = PKG_OPTS + LIB_OPTS + ARCHIVE_OPTS
-LIB_INTERFACE_OPTS = PKG_OPTS + LIB_OPTS + INTERFACE_OPTS
-LIB_MODULE_OPTS = PKG_OPTS + LIB_OPTS + MODULE_OPTS
-LIB_NS_MODULE_OPTS = PKG_OPTS + LIB_OPTS + NS_MODULE_OPTS
-LIB_DEPS = [
+RPC_PARALLEL_INTERFACE_OPTS = REPO_INTERFACE_OPTS + PKG_INTERFACE_OPTS
+
+RPC_PARALLEL_MODULE_OPTS = REPO_MODULE_OPTS + PKG_MODULE_OPTS
+
+RPC_PARALLEL_NS_MODULE_OPTS = REPO_NS_MODULE_OPTS + PKG_NS_MODULE_OPTS
+
+RPC_PARALLEL_DEPS = [
+    # do not sort (buildifier)
     "@opam//pkg:async",
     "@opam//pkg:core",
     "@opam//pkg:core.daemon",
@@ -36,231 +45,41 @@ LIB_DEPS = [
     "@opam//pkg:core.uuid",
 ]
 
-################################################################
+RPC_PARALLEL_PPX = "@//bzl/ppx:ppx.exe[ppx_jane]"
+
+RPC_PARALLEL_PPX_ARGS = [
+    # do not sort (buildifier)
+    "-inline-test-lib",
+    "rpc_parallel",
+]
+
+##############
 ocaml_archive(
     name = "rpc_parallel",
-    opts = LIB_ARCHIVE_OPTS,
+    opts = RPC_PARALLEL_ARCHIVE_OPTS,
     visibility = ["//visibility:public"],
-    deps = LIB_DEPS + [
-        ":Executable_location",
-        ":Fd_redirection",
-        ":For_testing_internal",
-        ":Map_reduce",
-        ":Parallel",
-        ":Parallel_intf",
-        ":Parallel_managed",
-        ":Remote_executable",
-        ":Rpc_parallel",
-        ":Utils",
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Executable_location",
+        ":_Fd_redirection",
+        ":_For_testing_internal",
+        ":_Map_reduce",
+        ":_Parallel",
+        ":_Parallel_intf",
+        ":_Parallel_managed",
+        ":_Remote_executable",
+        ":_Rpc_parallel",
+        ":_Utils",
     ],
 )
 
-ocaml_module(
-    name = "Executable_location",
-    src = "executable_location.ml",
-    intf = ":_Executable_location",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [":Remote_executable"],
-)
-
-ocaml_interface(
-    name = "_Executable_location",
-    src = "executable_location.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [":Remote_executable"],
-)
-
-ocaml_module(
-    name = "Fd_redirection",
-    src = "fd_redirection.ml",
-    intf = ":_Fd_redirection",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS
-)
-
-ocaml_interface(
-    name = "_Fd_redirection",
-    src = "fd_redirection.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS
-)
-
-ocaml_module(
-    name = "For_testing_internal",
-    src = "for_testing_internal.ml",
-    intf = ":_For_testing_internal",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS
-)
-
-ocaml_interface(
-    name = "_For_testing_internal",
-    src = "for_testing_internal.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS
-)
-
-ocaml_module(
-    name = "Map_reduce",
-    src = "map_reduce.ml",
-    intf = ":_Map_reduce",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [
-        ":Fd_redirection",
-        ":Parallel",
-        ":Remote_executable",
-    ],
-)
-
-ocaml_interface(
-    name = "_Map_reduce",
-    src = "map_reduce.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [":Remote_executable"],
-)
-
-ocaml_module(
-    name = "Parallel",
-    src = "parallel.ml",
-    intf = ":_Parallel",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [
-        ":Executable_location",
-        ":Fd_redirection",
-        ":For_testing_internal",
-        ":Parallel_intf",
-        ":Remote_executable",
-        ":Utils",
-    ],
-)
-
-ocaml_interface(
-    name = "_Parallel",
-    src = "parallel.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [":Parallel_intf"],
-)
-
-ocaml_module(
-    name = "Parallel_intf",
-    src = "parallel_intf.ml",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [
-        ":Executable_location",
-        ":Fd_redirection",
-    ],
-)
-
-ocaml_module(
-    name = "Parallel_managed",
-    src = "parallel_managed.ml",
-    intf = ":_Parallel_managed",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [
-        ":Executable_location",
-        ":Fd_redirection",
-        ":Parallel",
-        ":Utils",
-    ],
-)
-
-ocaml_interface(
-    name = "_Parallel_managed",
-    src = "parallel_managed.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [
-        ":Executable_location",
-        ":Fd_redirection",
-        ":Parallel",
-    ],
-)
-
-ocaml_module(
-    name = "Remote_executable",
-    src = "remote_executable.ml",
-    intf = ":_Remote_executable",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [":Utils"],
-)
-
-ocaml_interface(
-    name = "_Remote_executable",
-    src = "remote_executable.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS
-)
-
-ocaml_module(
-    name = "Rpc_parallel",
-    src = "rpc_parallel.ml",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [
-        ":Executable_location",
-        ":Fd_redirection",
-        ":Map_reduce",
-        ":Parallel",
-        ":Parallel_managed",
-        ":Remote_executable",
-    ],
-)
-
-ocaml_module(
-    name = "Utils",
-    src = "utils.ml",
-    intf = ":_Utils",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_MODULE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS + [":For_testing_internal"]
-)
-
-ocaml_interface(
-    name = "_Utils",
-    src = "utils.mli",
-    ns_module = ":Rpc_parallel_ns",
-    opts = LIB_INTERFACE_OPTS,
-    ppx = ":ppx",
-    deps = LIB_DEPS
-)
-
-################################################################
-ocaml_ns_module(
+#########
+ocaml_ns(
     name = "Rpc_parallel_ns",
     ns = "rpc_parallel",
-    opts = LIB_NS_MODULE_OPTS,
+    opts = RPC_PARALLEL_NS_MODULE_OPTS,
     submodules = [
+        # do not sort (buildifier)
         "executable_location.ml",
         "fd_redirection.ml",
         "for_testing_internal.ml",
@@ -274,27 +93,331 @@ ocaml_ns_module(
     ],
 )
 
-################################################################
-ppx_executable(
-    name = "ppx",
-    srcs = ["@obazl//ppxlib:driver_standalone_shim"],
-    opts = select({
-        "//bzl/config:enable_verbose": ["-verbose"],
-        "//conditions:default": [],
-    }) + [
-        "-linkall",
-        "-predicates", "ppx_driver",
-    ],
-    deps = [
-        ## ppx_jane throws the kitchen sink at it; this is the minimal set of libs.
+#############
+ocaml_module(
+    name = "_Executable_location",
+    src = "executable_location.ml",
+    intf = ":_Executable_location.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
         # do not sort (buildifier)
-        "@opam//pkg:ppx_bin_prot",
-        "@opam//pkg:ppx_custom_printf",
-        "@opam//pkg:ppx_fields_conv",
-        "@opam//pkg:ppx_here",
-        "@opam//pkg:ppx_let",
-        "@opam//pkg:ppx_pipebang",
-        "@opam//pkg:ppx_sexp_conv",
-        "@opam//pkg:ppx_sexp_message",
-    ]
+        ":_Remote_executable",
+    ],
+)
+
+################
+ocaml_interface(
+    name = "_Executable_location.cmi",
+    src = "executable_location.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Remote_executable",
+    ],
+)
+
+#############
+ocaml_module(
+    name = "_Fd_redirection",
+    src = "fd_redirection.ml",
+    intf = ":_Fd_redirection.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS,
+)
+
+################
+ocaml_interface(
+    name = "_Fd_redirection.cmi",
+    src = "fd_redirection.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS,
+)
+
+#############
+ocaml_module(
+    name = "_For_testing_internal",
+    src = "for_testing_internal.ml",
+    intf = ":_For_testing_internal.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS,
+)
+
+################
+ocaml_interface(
+    name = "_For_testing_internal.cmi",
+    src = "for_testing_internal.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS,
+)
+
+#############
+ocaml_module(
+    name = "_Map_reduce",
+    src = "map_reduce.ml",
+    intf = ":_Map_reduce.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Fd_redirection",
+        ":_Parallel",
+        ":_Remote_executable",
+    ],
+)
+
+################
+ocaml_interface(
+    name = "_Map_reduce.cmi",
+    src = "map_reduce.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Remote_executable",
+    ],
+)
+
+#############
+ocaml_module(
+    name = "_Parallel",
+    src = "parallel.ml",
+    intf = ":_Parallel.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Executable_location",
+        ":_Fd_redirection",
+        ":_For_testing_internal",
+        ":_Parallel_intf",
+        ":_Remote_executable",
+        ":_Utils",
+    ],
+)
+
+################
+ocaml_interface(
+    name = "_Parallel.cmi",
+    src = "parallel.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Parallel_intf",
+    ],
+)
+
+#############
+ocaml_module(
+    name = "_Parallel_intf",
+    src = "parallel_intf.ml",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Executable_location",
+        ":_Fd_redirection",
+    ],
+)
+
+#############
+ocaml_module(
+    name = "_Parallel_managed",
+    src = "parallel_managed.ml",
+    intf = ":_Parallel_managed.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Executable_location",
+        ":_Fd_redirection",
+        ":_Parallel",
+        ":_Utils",
+    ],
+)
+
+################
+ocaml_interface(
+    name = "_Parallel_managed.cmi",
+    src = "parallel_managed.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Executable_location",
+        ":_Fd_redirection",
+        ":_Parallel",
+    ],
+)
+
+#############
+ocaml_module(
+    name = "_Remote_executable",
+    src = "remote_executable.ml",
+    intf = ":_Remote_executable.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Utils",
+    ],
+)
+
+################
+ocaml_interface(
+    name = "_Remote_executable.cmi",
+    src = "remote_executable.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS,
+)
+
+#############
+ocaml_module(
+    name = "_Rpc_parallel",
+    src = "rpc_parallel.ml",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + [
+        # do not sort (buildifier)
+        ":_Executable_location",
+        ":_Fd_redirection",
+        ":_Map_reduce",
+        ":_Parallel",
+        ":_Parallel_managed",
+        ":_Remote_executable",
+    ],
+)
+
+#############
+ocaml_module(
+    name = "_Utils",
+    src = "utils.ml",
+    intf = ":_Utils.cmi",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_MODULE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS + ["_For_testing_internal"] # obazl:retain
+)
+
+################
+ocaml_interface(
+    name = "_Utils.cmi",
+    src = "utils.mli",
+    ns = ":Rpc_parallel_ns",
+    opts = RPC_PARALLEL_INTERFACE_OPTS,
+    ppx = RPC_PARALLEL_PPX,
+    ppx_args = RPC_PARALLEL_PPX_ARGS,
+    deps = RPC_PARALLEL_DEPS,
+)
+
+###################################################################
+######## Configuration Settings - see :BUILD.bzl #################
+bool_flag(
+    name = "always-link",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_always_link",
+    flag_values = {":always-link": str(True)},
+)
+
+bool_flag(
+    name = "debug",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "enable_debug",
+    flag_values = {":debug": str(True)},
+)
+
+bool_flag(
+    name = "threads",
+    build_setting_default = True,
+)
+
+config_setting(
+    name = "enable_threads",
+    flag_values = {":threads": str(True)},
+)
+
+bool_flag(
+    name = "tooling",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_tooling",
+    flag_values = {":tooling": str(True)},
+)
+
+bool_flag(
+    name = "verbose",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "enable_verbose",
+    flag_values = {":verbose": str(True)},
+)
+
+## PPX control
+string_flag(
+    name = "ppx-out",
+    build_setting_default = "binary",
+    values = [
+        "binary",
+        "text",
+    ],
+)
+
+config_setting(
+    name = "enable_ppx_output_format_text",
+    flag_values = {":ppx-out": "text"},
+)
+
+config_setting(
+    name = "enable_ppx_output_format_binary",
+    flag_values = {":ppx-out": "binary"},
 )
