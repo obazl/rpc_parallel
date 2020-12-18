@@ -7,32 +7,13 @@ load(
     "ocaml_module",
     "ocaml_ns",
 )
-load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
-load(
-    "//:BUILD.bzl",
-    "REPO_ARCHIVE_OPTS",
-    "REPO_INTERFACE_OPTS",
-    "REPO_MODULE_OPTS",
-    "REPO_NS_MODULE_OPTS",
-)
-load(
-    ":BUILD.bzl",
-    "PKG_ARCHIVE_OPTS",
-    "PKG_INTERFACE_OPTS",
-    "PKG_MODULE_OPTS",
-    "PKG_NS_MODULE_OPTS",
-)
 
 ################################################################
 ## STANZA 1: LIBRARY RPC_PARALLEL
 ################################################################
-RPC_PARALLEL_ARCHIVE_OPTS = REPO_ARCHIVE_OPTS + PKG_ARCHIVE_OPTS + []
+RPC_PARALLEL_INTERFACE_OPTS = []
 
-RPC_PARALLEL_INTERFACE_OPTS = REPO_INTERFACE_OPTS + PKG_INTERFACE_OPTS
-
-RPC_PARALLEL_MODULE_OPTS = REPO_MODULE_OPTS + PKG_MODULE_OPTS
-
-RPC_PARALLEL_NS_MODULE_OPTS = REPO_NS_MODULE_OPTS + PKG_NS_MODULE_OPTS
+RPC_PARALLEL_MODULE_OPTS = []
 
 RPC_PARALLEL_DEPS = [
     # do not sort (buildifier)
@@ -40,12 +21,11 @@ RPC_PARALLEL_DEPS = [
     "@opam//pkg:core",
     "@opam//pkg:core.daemon",
     "@opam//pkg:ctypes",
-    "@opam//pkg:ctypes.foreign",
     "@opam//pkg:sexplib",
     "@opam//pkg:core.uuid",
 ]
 
-RPC_PARALLEL_PPX = "@//bzl/ppx:ppx.exe[ppx_jane]"
+RPC_PARALLEL_PPX = "@//bzl/ppx/exe:ppx_jane"
 
 RPC_PARALLEL_PPX_ARGS = [
     # do not sort (buildifier)
@@ -56,7 +36,7 @@ RPC_PARALLEL_PPX_ARGS = [
 ##############
 ocaml_archive(
     name = "rpc_parallel",
-    opts = RPC_PARALLEL_ARCHIVE_OPTS,
+    opts = [],
     visibility = ["//visibility:public"],
     deps = RPC_PARALLEL_DEPS + [
         # do not sort (buildifier)
@@ -77,7 +57,7 @@ ocaml_archive(
 ocaml_ns(
     name = "Rpc_parallel_ns",
     ns = "rpc_parallel",
-    opts = RPC_PARALLEL_NS_MODULE_OPTS,
+    opts = [],
     submodules = [
         # do not sort (buildifier)
         "executable_location.ml",
@@ -336,7 +316,9 @@ ocaml_module(
     opts = RPC_PARALLEL_MODULE_OPTS,
     ppx = RPC_PARALLEL_PPX,
     ppx_args = RPC_PARALLEL_PPX_ARGS,
-    deps = RPC_PARALLEL_DEPS + ["_For_testing_internal"] # obazl:retain
+    deps = RPC_PARALLEL_DEPS + [
+        "_For_testing_internal" # obazl:retain
+    ]
 )
 
 ################
@@ -348,76 +330,4 @@ ocaml_interface(
     ppx = RPC_PARALLEL_PPX,
     ppx_args = RPC_PARALLEL_PPX_ARGS,
     deps = RPC_PARALLEL_DEPS,
-)
-
-###################################################################
-######## Configuration Settings - see :BUILD.bzl #################
-bool_flag(
-    name = "always-link",
-    build_setting_default = False,
-)
-
-config_setting(
-    name = "enable_always_link",
-    flag_values = {":always-link": str(True)},
-)
-
-bool_flag(
-    name = "debug",
-    build_setting_default = True,
-)
-
-config_setting(
-    name = "enable_debug",
-    flag_values = {":debug": str(True)},
-)
-
-bool_flag(
-    name = "threads",
-    build_setting_default = True,
-)
-
-config_setting(
-    name = "enable_threads",
-    flag_values = {":threads": str(True)},
-)
-
-bool_flag(
-    name = "tooling",
-    build_setting_default = False,
-)
-
-config_setting(
-    name = "enable_tooling",
-    flag_values = {":tooling": str(True)},
-)
-
-bool_flag(
-    name = "verbose",
-    build_setting_default = False,
-)
-
-config_setting(
-    name = "enable_verbose",
-    flag_values = {":verbose": str(True)},
-)
-
-## PPX control
-string_flag(
-    name = "ppx-out",
-    build_setting_default = "binary",
-    values = [
-        "binary",
-        "text",
-    ],
-)
-
-config_setting(
-    name = "enable_ppx_output_format_text",
-    flag_values = {":ppx-out": "text"},
-)
-
-config_setting(
-    name = "enable_ppx_output_format_binary",
-    flag_values = {":ppx-out": "binary"},
 )

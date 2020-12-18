@@ -6,40 +6,34 @@ load(
     "ocaml_interface",
     "ocaml_module",
 )
-load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "string_flag")
-load(
-    "//:BUILD.bzl",
-    "REPO_EXECUTABLE_OPTS",
-    "REPO_INTERFACE_OPTS",
-    "REPO_MODULE_OPTS",
-)
-load(
-    ":BUILD.bzl",
-    "PKG_EXECUTABLE_OPTS",
-    "PKG_INTERFACE_OPTS",
-    "PKG_MODULE_OPTS",
-)
 
 ################################################################
-THIS_EXECUTABLE_OPTS = REPO_EXECUTABLE_OPTS + PKG_EXECUTABLE_OPTS
-THIS_MODULE_OPTS     = REPO_MODULE_OPTS     + PKG_MODULE_OPTS
-THIS_INTERFACE_OPTS     = REPO_INTERFACE_OPTS     + PKG_INTERFACE_OPTS
+## STANZA 1: EXECUTABLES
+################################################################
+EXECUTABLES_EXECUTABLE_OPTS = []
 
-THIS_DEPS = [
+EXECUTABLES_INTERFACE_OPTS = []
+
+EXECUTABLES_MODULE_OPTS = []
+
+EXECUTABLES_DEPS = [
     # do not sort (buildifier)
     "@opam//pkg:async",
     "@opam//pkg:core",
-    "@opam//pkg:jane",          ## MISSING
     "@opam//pkg:sexplib",
     "@rpc_parallel//src:rpc_parallel",
 ]
 
+PPX = "//bzl/ppx/exe:ppx_jane"
+
+INLINE_TEST_LIB = "rpc_parallel"
+
 #################
 ocaml_executable(
     name = "add_numbers.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -47,9 +41,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "alternative_init.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -57,9 +51,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "async_log.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -67,9 +61,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "number_stats.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -77,9 +71,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "reverse_direct_pipe.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -87,9 +81,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "reverse_pipe.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -97,9 +91,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "rpc_direct_pipe.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -107,9 +101,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "serve.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -117,9 +111,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "side_arg.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -127,9 +121,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "spawn_in_foreground.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -137,9 +131,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "stream_workers.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -147,9 +141,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "worker_binprot.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -157,9 +151,9 @@ ocaml_executable(
 #################
 ocaml_executable(
     name = "workers_as_masters.exe",
-    opts = THIS_EXECUTABLE_OPTS,
+    opts = EXECUTABLES_EXECUTABLE_OPTS,
     visibility = ["//visibility:public"],
-    deps = THIS_DEPS + [
+    deps = EXECUTABLES_DEPS + [
         # do not sort (buildifier)
     ],
 )
@@ -170,28 +164,28 @@ ocaml_module(
     name = "_Add_numbers",
     src = "add_numbers.ml",
     intf = ":_Add_numbers.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Add_numbers.cmi",
     src = "add_numbers.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -199,28 +193,28 @@ ocaml_module(
     name = "_Alternative_init",
     src = "alternative_init.ml",
     intf = ":_Alternative_init.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Alternative_init.cmi",
     src = "alternative_init.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -228,28 +222,28 @@ ocaml_module(
     name = "_Async_log",
     src = "async_log.ml",
     intf = ":_Async_log.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Async_log.cmi",
     src = "async_log.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -257,28 +251,28 @@ ocaml_module(
     name = "_Number_stats",
     src = "number_stats.ml",
     intf = ":_Number_stats.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Number_stats.cmi",
     src = "number_stats.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -286,28 +280,28 @@ ocaml_module(
     name = "_Reverse_direct_pipe",
     src = "reverse_direct_pipe.ml",
     intf = ":_Reverse_direct_pipe.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Reverse_direct_pipe.cmi",
     src = "reverse_direct_pipe.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -315,28 +309,28 @@ ocaml_module(
     name = "_Reverse_pipe",
     src = "reverse_pipe.ml",
     intf = ":_Reverse_pipe.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Reverse_pipe.cmi",
     src = "reverse_pipe.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -344,28 +338,28 @@ ocaml_module(
     name = "_Rpc_direct_pipe",
     src = "rpc_direct_pipe.ml",
     intf = ":_Rpc_direct_pipe.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Rpc_direct_pipe.cmi",
     src = "rpc_direct_pipe.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -373,28 +367,28 @@ ocaml_module(
     name = "_Serve",
     src = "serve.ml",
     intf = ":_Serve.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Serve.cmi",
     src = "serve.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -402,28 +396,28 @@ ocaml_module(
     name = "_Side_arg",
     src = "side_arg.ml",
     intf = ":_Side_arg.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Side_arg.cmi",
     src = "side_arg.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -431,28 +425,28 @@ ocaml_module(
     name = "_Spawn_in_foreground",
     src = "spawn_in_foreground.ml",
     intf = ":_Spawn_in_foreground.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Spawn_in_foreground.cmi",
     src = "spawn_in_foreground.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -460,28 +454,28 @@ ocaml_module(
     name = "_Stream_workers",
     src = "stream_workers.ml",
     intf = ":_Stream_workers.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Stream_workers.cmi",
     src = "stream_workers.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -489,28 +483,28 @@ ocaml_module(
     name = "_Worker_binprot",
     src = "worker_binprot.ml",
     intf = ":_Worker_binprot.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Worker_binprot.cmi",
     src = "worker_binprot.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 #############
@@ -518,98 +512,26 @@ ocaml_module(
     name = "_Workers_as_masters",
     src = "workers_as_masters.ml",
     intf = ":_Workers_as_masters.cmi",
-    opts = THIS_MODULE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_MODULE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
+    deps = EXECUTABLES_DEPS,
 )
 
 ################
 ocaml_interface(
     name = "_Workers_as_masters.cmi",
     src = "workers_as_masters.mli",
-    opts = THIS_INTERFACE_OPTS,
-    ppx = "//bzl/ppx:ppx.exe[ppx_jane]",
+    opts = EXECUTABLES_INTERFACE_OPTS,
+    ppx = PPX,
     ppx_args = [
         # do not sort (buildifier)
         "-inline-test-lib",
-        "",
+        INLINE_TEST_LIB,
     ],
-    deps = THIS_DEPS,
-)
-
-###################################################################
-######## Configuration Settings - see :BUILD.bzl #################
-bool_flag(
-    name = "always-link",
-    build_setting_default = False,
-)
-
-config_setting(
-    name = "enable_always_link",
-    flag_values = {":always-link": str(True)},
-)
-
-bool_flag(
-    name = "debug",
-    build_setting_default = True,
-)
-
-config_setting(
-    name = "enable_debug",
-    flag_values = {":debug": str(True)},
-)
-
-bool_flag(
-    name = "threads",
-    build_setting_default = True,
-)
-
-config_setting(
-    name = "enable_threads",
-    flag_values = {":threads": str(True)},
-)
-
-bool_flag(
-    name = "tooling",
-    build_setting_default = False,
-)
-
-config_setting(
-    name = "enable_tooling",
-    flag_values = {":tooling": str(True)},
-)
-
-bool_flag(
-    name = "verbose",
-    build_setting_default = False,
-)
-
-config_setting(
-    name = "enable_verbose",
-    flag_values = {":verbose": str(True)},
-)
-
-## PPX control
-string_flag(
-    name = "ppx-out",
-    build_setting_default = "binary",
-    values = [
-        "binary",
-        "text",
-    ],
-)
-
-config_setting(
-    name = "enable_ppx_output_format_text",
-    flag_values = {":ppx-out": "text"},
-)
-
-config_setting(
-    name = "enable_ppx_output_format_binary",
-    flag_values = {":ppx-out": "binary"},
+    deps = EXECUTABLES_DEPS,
 )
